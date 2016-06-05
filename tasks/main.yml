@@ -1,0 +1,14 @@
+---
+- name: create /etc/sysctl.d
+  file: path=/etc/sysctl.d state=directory
+
+- name: /etc/sysctl.d/custom.conf
+  file: path=/etc/sysctl.d/custom.conf state=touch
+  changed_when: false
+
+- name: sysctl
+  sysctl: >
+    name={{ item.key }}
+    value={{ item.value }}
+    sysctl_file=/etc/sysctl.d/custom.conf
+  with_dict: "{{ sysctl | default({}) }}"
